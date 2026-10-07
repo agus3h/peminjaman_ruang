@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peminjaman Ruangan</title>
+    
+    <!-- DESAIN CSS MURNI DI DALAM FILE (100% AMAN & TETAP RAPI) -->
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #1b5e20; /* Latar belakang hijau tua */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Kotak Putih Utama */
+        .card {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 32px;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .header .icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .header h1 {
+            color: #1b5e20;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        /* Input Desain Persis Seperti Contoh Gambar Anda */
+        input[type="text"], input[type="date"], select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            background-color: #fff;
+            transition: all 0.2s ease;
+            color: #333;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #1b5e20;
+            box-shadow: 0 0 0 3px rgba(27, 94, 32, 0.15);
+        }
+
+        /* Latar Biru Lembut khusus untuk input Nama ketika mulai diketik */
+        input[type="text"]:focus {
+            background-color: #eff6ff;
+        }
+
+        /* Menyembunyikan bagian form bawah sebelum ruangan dipilih */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Tombol Booking Hijau Pekat */
+        .btn-submit {
+            width: 100%;
+            background-color: #1b5e20;
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-submit:hover {
+            background-color: #154d19;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        .alert-danger {
+            color: #b91c1c;
+            font-size: 12px;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <!-- Header Judul Form -->
+        <div class="header">
+            <div class="icon">🏢</div>
+            <h1>Peminjaman Ruangan</h1>
+            <p>Silakan pilih ruangan dan jadwal</p>
+        </div>
+
+        <form id="formPeminjaman">
+            <!-- Kolom Nama -->
+            <div class="form-group">
+                <label for="nama">Nama Peminjam</label>
+                <input type="text" id="nama" required placeholder="Masukkan nama Anda">
+            </div>
+
+            <!-- Kolom Pilihan Ruangan -->
+            <div class="form-group">
+                <label for="ruangan">Pilih Ruangan</label>
+                <select id="ruangan" required>
+                    <option value="">-- Pilih Ruangan --</option>
+                    <option value="Ruang Art Putri">Ruang Art Putri</option>
+                    <option value="Labkom Putra">Labkom Putra</option>
+                    <option value="Labkom Putri">Labkom Putri</option>
+                    <option value="Art Putra">Art Putra</option>
+                    <option value="Perpus">Perpus</option>
+                    <option value="Binpres Putra">Binpres Putra</option>
+                </select>
+            </div>
+
+            <!-- BAGIAN DINAMIS: Otomatis Disembunyikan Dulu -->
+            <div id="bagianDinamis" class="hidden">
+                <!-- Kolom Tanggal -->
+                <div class="form-group">
+                    <label for="tanggal">Pilih Tanggal</label>
+                    <input type="date" id="tanggal">
+                </div>
+
+                <!-- Kolom Waktu / Sesi -->
+                <div class="form-group">
+                    <label for="waktu">Pilih Waktu / Sesi</label>
+                    <select id="waktu">
+                        <!-- Opsi akan disaring otomatis oleh JavaScript -->
+                    </select>
+                    <p id="notifWaktu" class="alert-danger hidden">⚠️ Jadwal rutin sekolah atau bookingan orang lain penuh pada hari/tanggal ini.</p>
+                </div>
+
+                <!-- Kolom Keterangan -->
+                <div class="form-group">
+                    <label for="keterangan">Keterangan Keperluan</label>
+                    <textarea id="keterangan" rows="2" placeholder="Contoh: Latihan OSN / Kelas Seni"></textarea>
+                </div>
+            </div>
+
+            <!-- Tombol Submit -->
+            <button type="submit" class="btn-submit">Booking Ruangan</button>
+        </form>
+    </div>
+
+    <!-- TAUTAN PUSTAKA UTAMA SUPABASE VIA BROWSER -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/dist/umd/supabase.js"></script>
+
+    <!-- LOGIKA JAVASCRIPT UNTUK SUPABASE DAN BLOKIR JADWAL RUTIN -->
+    <script>
+        // ==========================================================
+        // SILAKAN MASUKKAN KREDENSIAL SUPABASE ANDA DI SINI
+        // ==========================================================
+        const SUPABASE_URL = "https://yilleeqfnqixugkwwzwm.supabase.co"; 
+        const SUPABASE_ANON_KEY = "sb_publishable_PUrLABOrglHw21n16nq66w_vFm7WhGV"; 
+        
+        // Inisialisasi client Supabase
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Master Sesi Waktu yang Disediakan
+        const MASTER_SESI = [
+            "Sesi 1 (07:00 - 08:30)",
+            "Sesi 2 (08:30 - 10:00)",
+            "Sesi 3 (10:30 - 12:00)",
+            "Sesi 4 (13:00 - 14:30)",
+            "Sesi 5 (14:30 - 16:00)",
+            "Sesi Malam (19:30 - 21:00)"
+        ];
+
+        // Nama-nama hari untuk konversi dari tanggal kalender
+        const NAMA_HARI = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+
+        const form = document.getElementById('formPeminjaman');
+        const selectRuangan = document.getElementById('ruangan');
+        const bagianDinamis = document.getElementById('bagianDinamis');
+        const inputTanggal = document.getElementById('tanggal');
+        const selectWaktu = document.getElementById('waktu');
+        const notifWaktu = document.getElementById('notifWaktu');
+        const inputKeterangan = document.getElementById('keterangan');
+
+        // Membatasi tanggal terkecil agar tidak bisa memilih hari kemarin
+        inputTanggal.min = new Date().toISOString().split('T')[0];
+
+        // Efek Buka-Tutup Form Otomatis
+        selectRuangan.addEventListener('change', function() {
+            if (this.value !== "") {
+                bagianDinamis.classList.remove('hidden');
+                inputTanggal.required = true;
+                selectWaktu.required = true;
+                inputKeterangan.required = true;
+                checkKetersediaanGanda();
+            } else {
+                bagianDinamis.classList.add('hidden');
+                inputTanggal.required = false;
+                selectWaktu.required = false;
+                inputKeterangan.required = false;
+            }
+        });
+
+        // Deteksi perubahan tanggal untuk menyaring waktu kosong
+        inputTanggal.addEventListener('change', checkKetersediaanGanda);
+
+        // FUNGSI INTI: Menyaring & Memblokir Waktu Bentrok (Rutin MINGGUAN + Booking BIASA)
+        async function checkKetersediaanGanda() {
+            const ruangan = selectRuangan.value;
+            const tanggal = inputTanggal.value;
+
+            if (!ruangan || !tanggal) {
+                selectWaktu.innerHTML = '<option value="">-- Pilih Tanggal Terlebih Dahulu --</option>';
+                return;
+            }
+
+            selectWaktu.innerHTML = '<option value="">Menyaring jadwal kosong...</option>';
+            notifWaktu.classList.add('hidden');
+
+            // PERBAIKAN TIMEZONE: Pecah string tanggal agar dibaca sesuai waktu lokal Indonesia
+            const [tahun, bulan, hariKalender] = tanggal.split('-');
+            const dateObj = new Date(tahun, bulan - 1, hariKalender);
+            const namaHari = NAMA_HARI[dateObj.getDay()];
+
+            try {
+                // CEK JADWAL RUTIN: Ambil kegiatan tetap dari tabel 'jadwal_rutin'
+                let { data: rutin, error: errRutin } = await supabaseClient
+                    .from('jadwal_rutin')
+                    .select('sesi_waktu')
+                    .eq('ruangan', ruangan)
+                    .eq('hari', namaHari);
+
+                if (errRutin) throw errRutin;
+
+                // CEK JADWAL INSIDENTAL: Ambil bokingan siswa lain dari tabel 'peminjaman_ruangan'
+                let { data: insidental, error: errInsidental } = await supabaseClient
+                    .from('peminjaman_ruangan')
+                    .select('sesi_waktu')
+                    .eq('ruangan', ruangan)
+                    .eq('tanggal', tanggal);
+
+                if (errInsidental) throw errInsidental;
+
+                // Gabungkan seluruh sesi waktu yang sudah terpakai
+                const sesiTerpakaiRutin = rutin.map(item => item.sesi_waktu);
+                const sesiTerpakaiInsidental = insidental.map(item => item.sesi_waktu);
+                const totalSesiTerpakai = [...sesiTerpakaiRutin, ...sesiTerpakaiInsidental];
+
+                // Filter: Sisakan sesi yang benar-benar masih kosong
+                const sesiTersedia = MASTER_SESI.filter(sesi => !totalSesiTerpakai.includes(sesi));
+
+                selectWaktu.innerHTML = '<option value="">-- Pilih Waktu Tersedia --</option>';
+                
+                if (sesiTersedia.length === 0) {
+                    notifWaktu.classList.remove('hidden');
+                } else {
+                    sesiTersedia.forEach(sesi => {
+                        const opt = document.createElement('option');
+                        opt.value = sesi;
+                        opt.textContent = sesi;
+                        selectWaktu.appendChild(opt);
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+                selectWaktu.innerHTML = '<option value="">Gagal memeriksa database</option>';
+            }
+        }
+
+        // PROSES SIMPAN / SUBMIT DATA KE DATABASE SUPABASE
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const nama = document.getElementById('nama').value;
+            const ruangan = selectRuangan.value;
+            const tanggal = inputTanggal.value;
+            const waktu = selectWaktu.value;
+            const keterangan = inputKeterangan.value;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('peminjaman_ruangan')
+                    .insert([{ 
+                        nama_peminjam: nama, 
+                        ruangan: ruangan, 
+                        tanggal: tanggal, 
+                        sesi_waktu: waktu, 
+                        keterangan: keterangan 
+                    }]);
+
+                if (error) throw error;
+                
+                alert(`Sukses! Ruangan ${ruangan} berhasil di-booking.`);
+                form.reset();
+                bagianDinamis.classList.add('hidden');
+            } catch (err) {
+                alert("Gagal memproses booking: " + err.message);
+            }
+        });
+    </script>
+</body>
+</html>
